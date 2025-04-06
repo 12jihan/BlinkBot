@@ -1,6 +1,7 @@
 import {
   ChannelManager,
   Client,
+  Events,
   GatewayIntentBits,
   Guild,
   GuildMember,
@@ -34,12 +35,11 @@ client.on("guildMemberAdd", (info: GuildMember) => {
 });
 
 client.on(
-  "messageCreate",
-  (message: OmitPartialGroupDMChannel<Message<boolean>>) => {
-    const guildID: string = "1275160714780082206";
+  Events.MessageCreate,
+  (message: OmitPartialGroupDMChannel<Message<boolean>>): void => {
     if (message.content.length > 2) {
-      console.log("message:", message.content);
-      message.channel.sendTyping();
+      console.log("message:", message);
+      // message.channel.sendTyping();
 
       if (message.content === "create") {
         createCommands();
@@ -51,6 +51,8 @@ client.on(
 );
 
 client.login(process.env.DISCORD_TOKEN);
+
+client;
 
 function createCommands(): void {
   console.log("used");
