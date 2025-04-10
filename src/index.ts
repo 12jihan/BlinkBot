@@ -50,9 +50,7 @@ client.on(
   },
 );
 
-client.login(process.env.DISCORD_TOKEN);
-
-client;
+client.login(process.env.BOT_ID);
 
 function createCommands(): void {
   console.log("used");
