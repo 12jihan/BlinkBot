@@ -8,55 +8,53 @@ import {
   GuildResolvable,
   Message,
   OmitPartialGroupDMChannel,
+  REST,
   SlashCommandBuilder,
 } from "discord.js";
 import { joinVoiceChannel, createAudioPlayer } from "@discordjs/voice";
 import ytdl from "ytdl-core";
 import dotenv from "dotenv";
+import SlashCommandManager from "./SlashCommandManager/SlashCommandManager";
 dotenv.config();
 
-const queue = new Map();
+// const queue = new Map();
+const rest = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN!);
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.DirectMessages,
     GatewayIntentBits.MessageContent,
-    // GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildVoiceStates,
   ],
 });
 
-client.on("ready", (): void => {
+// Imports for instances
+const scm: SlashCommandManager = new SlashCommandManager(rest);
+
+client.on(Events.ClientReady, (): void => {
   console.log("someone is ready!");
 });
 
-client.on("guildMemberAdd", (info: GuildMember) => {
+client.on(Events.GuildMemberAdd, (info: GuildMember) => {
   console.log("new guy here", info);
 });
 
-client.on(
-  Events.MessageCreate,
-  (message: OmitPartialGroupDMChannel<Message<boolean>>): void => {
-    if (message.content.length > 2) {
-      console.log("message:", message);
-      // message.channel.sendTyping();
+client.on(Events.MessageCreate, (message: OmitPartialGroupDMChannel<Message<boolean>>): void => {
+  if (message.content.length >= 2 && message.author.id != process.env.BOT_ID) {
+    message.channel.send(message.content);
+  } else {
+    console.log(message.content);
+  }
+});
 
-      if (message.content === "create") {
-        createCommands();
-      }
-    }
-    // const guildPreview = await client.fetchGuildPreview(guildID);
-    // console.log("guild info:", guildPreview);
-  },
-);
+client.login(process.env.BOT_TOKEN);
 
-client.login(process.env.BOT_ID);
-
-function createCommands(): void {
+async function createCommands(): Promise<void> {
   console.log("used");
 
   // Creates commands:
-  client.application?.commands
+  await client.application?.commands
     .create({
       name: "crazy",
       description: "does stuff",

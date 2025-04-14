@@ -1,0 +1,16 @@
+{
+  "commands": [
+    {
+      "name": "test0",
+      "description": "This is a command that I will be using to test out other commands"
+    },
+    {
+      "name": "test1",
+      "description": "This is a command that I will be using to test out other commands"
+    },
+    {
+      "name": "test2",
+      "description": "This is a command that I will be using to test out other commands"
+    }
+  ]
+}
